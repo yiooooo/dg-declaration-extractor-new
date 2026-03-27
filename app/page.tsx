@@ -470,7 +470,7 @@ export default function App() {
 
         {/* Footer */}
         <footer className="mt-12 pt-8 border-t border-gray-200 text-center text-gray-400 text-sm">
-          <p>© 2024 DG Declaration Extractor. All rights reserved.</p>
+          <p>© 2026 DG Declaration Extractor. All rights reserved.</p>
         </footer>
       </div>
 
