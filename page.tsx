@@ -52,8 +52,6 @@ export default function App() {
   const [apiKey, setApiKey] = useState('');
   const [openaiBaseUrl, setOpenaiBaseUrl] = useState('');
   const [geminiBaseUrl, setGeminiBaseUrl] = useState('');
-  console.log('openaiBaseUrl', openaiBaseUrl)
-  console.log('geminiBaseUrl', geminiBaseUrl)
 
   useEffect(() => {
     const savedProvider = localStorage.getItem('dg_provider') as Provider;
@@ -474,7 +472,7 @@ export default function App() {
 
         {/* Footer */}
         <footer className="mt-12 pt-8 border-t border-gray-200 text-center text-gray-400 text-sm">
-          <p>© 2024 DG Declaration Extractor. All rights reserved.</p>
+          <p>© 2026 DG Declaration Extractor. All rights reserved.</p>
         </footer>
       </div>
 
