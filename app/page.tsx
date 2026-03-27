@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
 import * as XLSX from 'xlsx';
-import { 
-  Upload, 
-  FileSpreadsheet, 
-  Loader2, 
-  CheckCircle2, 
-  AlertCircle, 
-  Trash2, 
+import {
+  Upload,
+  FileSpreadsheet,
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+  Trash2,
   Image as ImageIcon,
   Download,
   Settings,
@@ -46,7 +46,7 @@ export default function App() {
   const [files, setFiles] = useState<FileStatus[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  
+
   // API Settings
   const [provider, setProvider] = useState<Provider>('openai');
   const [apiKey, setApiKey] = useState('');
@@ -56,7 +56,7 @@ export default function App() {
   useEffect(() => {
     const savedProvider = localStorage.getItem('dg_provider') as Provider;
     if (savedProvider) setProvider(savedProvider);
-    
+
     const savedKey = localStorage.getItem('dg_api_key');
     if (savedKey) setApiKey(savedKey);
 
@@ -120,7 +120,7 @@ export default function App() {
 
     setIsProcessing(true);
     const updatedFiles = [...files];
-    
+
     for (let i = 0; i < updatedFiles.length; i++) {
       if (updatedFiles[i].status === 'completed') continue;
 
@@ -143,10 +143,10 @@ export default function App() {
              - 若內容為 NIL, NO, N/A, NA, NON 則一律輸出 "NO"。
              - 看到 YES 或 REQUIRED 則輸出 "YES"。
           8. LIMITED_QUANTITIES (LQ): 
-             - 識別欄位名稱如 Limited quantity, LQ, limit quality 等。
+             - 識別欄位名稱如 Limited quantity, LQ, LTD QTY, limit quality 等。
              - 只要出現上述關鍵字且後方沒有標註 NO，一律輸出 "YES"。
              - 否則輸出 "NO"。
-          9. EMERGENCY_CONTACT: 提取聯絡人姓名及完整電話。
+          9. EMERGENCY_CONTACT: 只提取「緊急電話號碼」。請移除所有聯絡人姓名，僅保留包含國碼的電話數字與符號 (如 +81-3-3834-0179)。
           10. NET_WEIGHT: 提取淨重數字。
           11. SGG_GROUP: 
              - 識別 Segregation Group 或 SGG 欄位。
@@ -163,12 +163,12 @@ export default function App() {
 
         if (provider === 'gemini') {
           // Use type assertion to bypass SDK type limitations while supporting custom Base URL
-          const genAI = new GoogleGenAI({ 
+          const genAI = new GoogleGenAI({
             apiKey,
-            baseUrl: geminiBaseUrl || undefined 
+            baseUrl: geminiBaseUrl || undefined
           } as any);
           const base64Data = await fileToBase64(updatedFiles[i].file);
-          
+
           const response = await genAI.models.generateContent({
             model: "gemini-3-flash-preview",
             contents: [
@@ -188,7 +188,7 @@ export default function App() {
               responseMimeType: "application/json"
             }
           });
-          
+
           resultJson = JSON.parse(response.text || "{}");
         } else {
           // OpenAI via Backend
@@ -198,7 +198,7 @@ export default function App() {
           const headers: Record<string, string> = {
             "x-api-key": apiKey
           };
-          
+
           if (openaiBaseUrl) {
             headers["x-base-url"] = openaiBaseUrl;
           }
@@ -216,7 +216,7 @@ export default function App() {
 
           resultJson = await response.json();
         }
-        
+
         updatedFiles[i].status = 'completed';
         updatedFiles[i].result = resultJson;
       } catch (error) {
@@ -224,14 +224,14 @@ export default function App() {
         updatedFiles[i].status = 'error';
         updatedFiles[i].error = error instanceof Error ? error.message : "辨識發生錯誤";
       }
-      
+
       setFiles([...updatedFiles]);
-      
+
       if (i < updatedFiles.length - 1) {
         await new Promise(resolve => setTimeout(resolve, 1500));
       }
     }
-    
+
     setIsProcessing(false);
   };
 
@@ -245,7 +245,7 @@ export default function App() {
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "DG Data");
-    
+
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 16);
     XLSX.writeFile(workbook, `DG_Extraction_${timestamp}.xlsx`);
   };
@@ -275,11 +275,10 @@ export default function App() {
               type="button"
               onClick={processFiles}
               disabled={isProcessing || files.length === 0}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all ${
-                isProcessing || files.length === 0
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all ${isProcessing || files.length === 0
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   : 'bg-[#0A0A0A] text-white hover:bg-[#2A2A2A] shadow-lg hover:shadow-xl active:scale-95'
-              }`}
+                }`}
             >
               {isProcessing ? (
                 <>
@@ -297,11 +296,10 @@ export default function App() {
               type="button"
               onClick={exportToExcel}
               disabled={isProcessing || !files.some(f => f.status === 'completed')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all ${
-                isProcessing || !files.some(f => f.status === 'completed')
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all ${isProcessing || !files.some(f => f.status === 'completed')
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   : 'bg-white text-[#0A0A0A] border border-gray-200 hover:bg-gray-50 shadow-sm active:scale-95'
-              }`}
+                }`}
             >
               <Download className="w-4 h-4" />
               匯出 Excel
@@ -317,7 +315,7 @@ export default function App() {
                 <Upload className="w-5 h-5" />
                 上傳單據
               </h2>
-              
+
               <label className="relative group cursor-pointer block">
                 <div className="border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center transition-colors group-hover:border-gray-400 group-hover:bg-gray-50">
                   <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
@@ -326,11 +324,11 @@ export default function App() {
                   <p className="text-sm font-medium text-gray-700">點擊上傳</p>
                   <p className="text-xs text-gray-400 mt-1">PDF, JPG, PNG (最大 10MB)</p>
                 </div>
-                <input 
-                  type="file" 
-                  multiple 
-                  accept="image/*,application/pdf" 
-                  className="hidden" 
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*,application/pdf"
+                  className="hidden"
                   onChange={onFileChange}
                 />
               </label>
@@ -371,7 +369,7 @@ export default function App() {
                         )}
                       </div>
                     </div>
-                    <button 
+                    <button
                       type="button"
                       onClick={() => removeFile(idx)}
                       className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
@@ -478,7 +476,7 @@ export default function App() {
 
       {/* Settings Modal - Always in DOM but hidden/visible via class */}
       <div className={`fixed inset-0 z-[99999] ${showSettings ? 'flex' : 'hidden'} items-center justify-center p-4`}>
-        <div 
+        <div
           className="absolute inset-0 bg-black/60"
           onClick={() => setShowSettings(false)}
         />
@@ -488,7 +486,7 @@ export default function App() {
               <Settings className="w-6 h-6" />
               API 設定
             </h2>
-            <button 
+            <button
               type="button"
               onClick={() => setShowSettings(false)}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -511,22 +509,20 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setProvider('openai')}
-                  className={`py-3 px-4 rounded-xl border-2 transition-all font-medium ${
-                    provider === 'openai' 
-                      ? 'border-[#0A0A0A] bg-[#0A0A0A] text-white' 
+                  className={`py-3 px-4 rounded-xl border-2 transition-all font-medium ${provider === 'openai'
+                      ? 'border-[#0A0A0A] bg-[#0A0A0A] text-white'
                       : 'border-gray-100 bg-gray-50 text-gray-600 hover:border-gray-200'
-                  }`}
+                    }`}
                 >
                   GPT
                 </button>
                 <button
                   type="button"
                   onClick={() => setProvider('gemini')}
-                  className={`py-3 px-4 rounded-xl border-2 transition-all font-medium ${
-                    provider === 'gemini' 
-                      ? 'border-[#0A0A0A] bg-[#0A0A0A] text-white' 
+                  className={`py-3 px-4 rounded-xl border-2 transition-all font-medium ${provider === 'gemini'
+                      ? 'border-[#0A0A0A] bg-[#0A0A0A] text-white'
                       : 'border-gray-100 bg-gray-50 text-gray-600 hover:border-gray-200'
-                  }`}
+                    }`}
                 >
                   Gemini
                 </button>

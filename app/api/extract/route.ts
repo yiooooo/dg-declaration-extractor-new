@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "API Key is required" }, { status: 401 });
     }
 
-    const client = new OpenAI({ 
+    const client = new OpenAI({
       apiKey,
       baseURL: userBaseUrl || undefined
     });
@@ -39,22 +39,22 @@ export async function POST(req: NextRequest) {
       5. PACKING_GROUP (PG): 容器等級 I, II 或 III。
       6. FLASH_POINT (FP): 提取引火點溫度數字及單位。
       7. MARINE_POLLUTANTS (MP): 
-         - 識別欄位名稱如 Marine pollutant, marine pollutants, MP 等。
-         - 若內容為 NIL, NO, N/A, NA, NON 則一律輸出 "NO"。
-         - 看到 YES 或 REQUIRED 則輸出 "YES"。
+          - 識別欄位名稱如 Marine pollutant, marine pollutants, MP 等。
+          - 若內容為 NIL, NO, N/A, NA, NON 則一律輸出 "NO"。
+          - 看到 YES 或 REQUIRED 則輸出 "YES"。
       8. LIMITED_QUANTITIES (LQ): 
-         - 識別欄位名稱如 Limited quantity, LQ, limit quality 等。
-         - 只要出現上述關鍵字且後方沒有標註 NO，一律輸出 "YES"。
-         - 否則輸出 "NO"。
-      9. EMERGENCY_CONTACT: 提取聯絡人姓名及完整電話。
+          - 識別欄位名稱如 Limited quantity, LQ, LTD QTY, limit quality 等。
+          - 只要出現上述關鍵字且後方沒有標註 NO，一律輸出 "YES"。
+          - 否則輸出 "NO"。
+      9. EMERGENCY_CONTACT: 只提取「緊急電話號碼」。請移除所有聯絡人姓名，僅保留包含國碼的電話數字與符號 (如 +81-3-3834-0179)。
       10. NET_WEIGHT: 提取淨重數字。
       11. SGG_GROUP: 
-         - 識別 Segregation Group 或 SGG 欄位。
-         - 提取編號數字 (例如 SGG 1 則輸出 "1")。
+          - 識別 Segregation Group 或 SGG 欄位。
+          - 提取編號數字 (例如 SGG 1 則輸出 "1")。
       12. SHIPPING_NAME (技術名稱規則): 
-         - 檢查 Proper Shipping Name 欄位。
-         - 只有當品名中出現 "N.O.S." 時，提取其後方所有括號 () 內的內容。
-         - 若品名中沒有 "N.O.S."，此欄位必須保持為「空白」。
+          - 檢查 Proper Shipping Name 欄位。
+          - 只有當品名中出現 "N.O.S." 時，提取其後方所有括號 () 內的內容。
+          - 若品名中沒有 "N.O.S."，此欄位必須保持為「空白」。
 
       請僅輸出 JSON 代碼塊，不要有其他解釋。
     `;
