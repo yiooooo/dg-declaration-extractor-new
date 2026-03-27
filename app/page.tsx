@@ -276,8 +276,8 @@ export default function App() {
               onClick={processFiles}
               disabled={isProcessing || files.length === 0}
               className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all ${isProcessing || files.length === 0
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-[#0A0A0A] text-white hover:bg-[#2A2A2A] shadow-lg hover:shadow-xl active:scale-95'
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-[#0A0A0A] text-white hover:bg-[#2A2A2A] shadow-lg hover:shadow-xl active:scale-95'
                 }`}
             >
               {isProcessing ? (
@@ -297,8 +297,8 @@ export default function App() {
               onClick={exportToExcel}
               disabled={isProcessing || !files.some(f => f.status === 'completed')}
               className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all ${isProcessing || !files.some(f => f.status === 'completed')
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-white text-[#0A0A0A] border border-gray-200 hover:bg-gray-50 shadow-sm active:scale-95'
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-[#0A0A0A] border border-gray-200 hover:bg-gray-50 shadow-sm active:scale-95'
                 }`}
             >
               <Download className="w-4 h-4" />
@@ -510,8 +510,8 @@ export default function App() {
                   type="button"
                   onClick={() => setProvider('openai')}
                   className={`py-3 px-4 rounded-xl border-2 transition-all font-medium ${provider === 'openai'
-                      ? 'border-[#0A0A0A] bg-[#0A0A0A] text-white'
-                      : 'border-gray-100 bg-gray-50 text-gray-600 hover:border-gray-200'
+                    ? 'border-[#0A0A0A] bg-[#0A0A0A] text-white'
+                    : 'border-gray-100 bg-gray-50 text-gray-600 hover:border-gray-200'
                     }`}
                 >
                   GPT
@@ -520,8 +520,8 @@ export default function App() {
                   type="button"
                   onClick={() => setProvider('gemini')}
                   className={`py-3 px-4 rounded-xl border-2 transition-all font-medium ${provider === 'gemini'
-                      ? 'border-[#0A0A0A] bg-[#0A0A0A] text-white'
-                      : 'border-gray-100 bg-gray-50 text-gray-600 hover:border-gray-200'
+                    ? 'border-[#0A0A0A] bg-[#0A0A0A] text-white'
+                    : 'border-gray-100 bg-gray-50 text-gray-600 hover:border-gray-200'
                     }`}
                 >
                   Gemini
